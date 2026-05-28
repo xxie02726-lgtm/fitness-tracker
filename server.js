@@ -502,8 +502,12 @@ app.get('/api/watch-data/latest', (req, res) => {
 });
 
 // ============================================================
-//  3. 健康检查
+//  3. 健康检查 & 根路由
 // ============================================================
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
@@ -511,6 +515,13 @@ app.get('/api/health', (req, res) => {
     watchRecords: loadWatchData().length,
     time: new Date().toISOString()
   });
+});
+
+// ============================================================
+//  4. 所有未匹配路由 → index.html（兼容 Render 部署）
+// ============================================================
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // ============================================================
