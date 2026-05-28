@@ -17,10 +17,30 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 
+// ---- 加载 .env 文件 ----
+try {
+  const envPath = path.join(__dirname, '.env');
+  if (fs.existsSync(envPath)) {
+    const envContent = fs.readFileSync(envPath, 'utf8');
+    envContent.split('\n').forEach(line => {
+      const trimmed = line.trim();
+      if (trimmed && !trimmed.startsWith('#')) {
+        const eqIdx = trimmed.indexOf('=');
+        if (eqIdx > 0) {
+          const key = trimmed.slice(0, eqIdx).trim();
+          const val = trimmed.slice(eqIdx + 1).trim();
+          if (!process.env[key]) process.env[key] = val;
+        }
+      }
+    });
+    console.log('📄 已加载 .env 配置文件');
+  }
+} catch (e) { /* ignore */ }
+
 // ---- 配置 ----
 const PORT = process.env.PORT || 3000;
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || '';
-const DEEPSEEK_BASE_URL = 'https://api.deepseek.com';
+const DEEPSEEK_BASE_URL = process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com';
 const WATCH_DATA_FILE = path.join(__dirname, 'watch_data.json');
 
 const app = express();
@@ -502,7 +522,7 @@ app.listen(PORT, '0.0.0.0', () => {
 ║         GlowFit 服务端已启动 🟢              ║
 ╠══════════════════════════════════════════════╣
 ║  服务端口: ${PORT}
-║  DeepSeek: ${DEEPSEEP_API_KEY ? '已连接 ✅' : '演示模式 ⚠️（无 API Key）'}
+║  DeepSeek: ${DEEPSEEK_API_KEY ? '已连接 ✅' : '演示模式 ⚠️（无 API Key）'}
 ║  Watch数据: ${loadWatchData().length} 条记录
 ║  静态文件: 当前目录
 ║                                              ║
