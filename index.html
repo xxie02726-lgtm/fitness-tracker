@@ -108,11 +108,64 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: #34d399
   .ai-panel { right:8px; left:8px; width:auto; bottom:80px; height:460px; }
   .ai-fab { bottom:16px; right:16px; width:50px; height:50px; font-size:20px; }
 }
+
+/* Auth overlay */
+.auth-overlay { position:fixed; inset:0; z-index:9999; background:linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%); display:flex; align-items:center; justify-content:center; }
+.dark .auth-overlay { background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%); }
+.auth-card { width:380px; max-width:92vw; padding:36px 32px; }
+.auth-tab { cursor:pointer; padding:8px 0; font-size:14px; font-weight:600; color:#94a3b8; border-bottom:2px solid transparent; transition:all 0.2s; }
+.auth-tab.active { color:#059669; border-bottom-color:#059669; }
+.app-hidden { display:none !important; }
+
+/* Mobile UX */
+@media (max-width:640px) {
+  .record-item { padding:10px 12px; }
+  .glass-card { padding-left:16px !important; padding-right:16px !important; }
+  .nav-btn { padding:6px 10px; font-size:11px; }
+  .chart-wrap { height:160px; }
+  .chart-wrap-sm { height:120px; }
+  .ai-msg { max-width:92%; font-size:12px; }
+  .auth-card { padding:24px 20px !important; }
+}
 </style>
 </head>
 <body class="p-3 md:p-6 text-slate-800 font-sans min-h-screen" id="appBody">
 
-<div class="max-w-5xl mx-auto space-y-5">
+<!-- ==================== 登录/注册叠加层 ==================== -->
+<div class="auth-overlay" id="authOverlay">
+  <div class="glass-card auth-card shadow-2xl">
+    <div class="text-center mb-6">
+      <div class="w-14 h-14 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl flex items-center justify-center text-white text-xl shadow-md mx-auto mb-3"><i class="fa-solid fa-leaf"></i></div>
+      <h2 class="text-lg font-bold text-slate-800 dark:text-white">GlowFit</h2>
+      <p class="text-xs text-slate-400 mt-1">记录美好的一天</p>
+    </div>
+
+    <div class="flex gap-4 justify-center mb-6 border-b border-slate-200 dark:border-slate-700">
+      <span class="auth-tab active" id="authTabLogin" onclick="switchAuthTab('login')">登录</span>
+      <span class="auth-tab" id="authTabRegister" onclick="switchAuthTab('register')">注册</span>
+    </div>
+
+    <!-- 登录表单 -->
+    <div id="authFormLogin" class="space-y-3">
+      <div><label class="text-xs text-slate-500 block mb-1">用户名</label><input id="loginUsername" class="w-full px-3 py-2.5 rounded-xl text-sm" placeholder="请输入用户名" autocomplete="username"></div>
+      <div><label class="text-xs text-slate-500 block mb-1">密码</label><input id="loginPassword" type="password" class="w-full px-3 py-2.5 rounded-xl text-sm" placeholder="请输入密码" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button onclick="doLogin()" class="w-full py-2.5 rounded-xl bg-emerald-500 text-white text-sm font-semibold hover:bg-emerald-600 transition-all mt-2">登录</button>
+      <p id="loginError" class="text-xs text-red-500 text-center hidden"></p>
+    </div>
+
+    <!-- 注册表单 -->
+    <div id="authFormRegister" class="space-y-3 hidden">
+      <div><label class="text-xs text-slate-500 block mb-1">用户名</label><input id="regUsername" class="w-full px-3 py-2.5 rounded-xl text-sm" placeholder="至少2个字符" autocomplete="username"></div>
+      <div><label class="text-xs text-slate-500 block mb-1">密码</label><input id="regPassword" type="password" class="w-full px-3 py-2.5 rounded-xl text-sm" placeholder="至少4个字符" autocomplete="new-password"></div>
+      <div><label class="text-xs text-slate-500 block mb-1">确认密码</label><input id="regPassword2" type="password" class="w-full px-3 py-2.5 rounded-xl text-sm" placeholder="再次输入密码" autocomplete="new-password" onkeydown="if(event.key==='Enter')doRegister()"></div>
+      <button onclick="doRegister()" class="w-full py-2.5 rounded-xl bg-emerald-500 text-white text-sm font-semibold hover:bg-emerald-600 transition-all mt-2">注册</button>
+      <p id="regError" class="text-xs text-red-500 text-center hidden"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 主应用 ==================== -->
+<div id="appContainer" class="max-w-5xl mx-auto space-y-5">
 
 <!-- ==================== HEADER ==================== -->
 <header class="glass-card px-5 py-3 md:px-6 md:py-4 flex items-center justify-between shadow-sm">
@@ -125,6 +178,7 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: #34d399
   </div>
   <div class="flex items-center gap-2">
     <button onclick="toggleDark()" class="glass-btn w-8 h-8 rounded-full flex items-center justify-center text-slate-500 hover:text-slate-700 text-sm" id="darkToggle"><i class="fa-solid fa-moon"></i></button>
+    <button onclick="showUserMenu()" class="glass-btn px-2.5 py-1.5 rounded-full text-xs font-semibold text-slate-600 hover:text-emerald-600 flex items-center gap-1.5" id="userBtn"><i class="fa-solid fa-user"></i><span id="userBtnName">登录</span></button>
     <button onclick="openWatchBind()" class="glass-btn w-8 h-8 rounded-full flex items-center justify-center text-slate-500 hover:text-blue-600 text-sm" title="绑定 Apple Watch"><i class="fa-brands fa-apple"></i></button>
     <button onclick="openFoodModal()" class="glass-btn px-3 py-1.5 rounded-full text-xs font-semibold text-emerald-600 hover:text-emerald-700 flex items-center gap-1.5"><i class="fa-solid fa-plus"></i> 记一餐</button>
     <button id="watchSyncBtn" onclick="toggleWatchSync()" class="hidden md:flex items-center gap-2 bg-gradient-to-r from-slate-800 to-slate-900 text-white px-4 py-2 rounded-full text-xs font-semibold shadow-lg hover:scale-105 transition-all">
@@ -700,7 +754,7 @@ function calcStreak(){
   return s;
 }
 
-function getWater(ds){return (DB.get('water')||{})[ds]||0;}
+function getWater(ds){return API.getWaterAmt(ds) || (DB.get('water')||{})[ds]||0;}
 function setWater(ds,a){const w=DB.get('water')||{};w[ds]=Math.max(0,a);DB.set('water',w);}
 
 function renderWaterGlasses(cid,vid,ds){
@@ -981,7 +1035,9 @@ function renderStats(){
 }
 function saveFullGoals(){
   const g={cal:parseInt(document.getElementById('goalCal').value)||2000,protein:parseInt(document.getElementById('goalProt').value)||150,carb:parseInt(document.getElementById('goalCarb').value)||250,fat:parseInt(document.getElementById('goalFat').value)||65,water:parseInt(document.getElementById('goalWater').value)||2000,weight:parseFloat(document.getElementById('goalWeight').value)||65};
-  DB.set('goals',g);alert('目标已保存');refreshAll();
+  DB.set('goals',g);
+  fetch(API.BASE + '/api/profile/goals', { method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+localStorage.getItem('glowfit_token')}, body:JSON.stringify(g) }).catch(()=>{});
+  alert('目标已保存');refreshAll();
 }
 
 // ===================== DASHBOARD =====================
@@ -1265,9 +1321,301 @@ POST /api/sync-watch-data
   addAIMessage('ai', '📥 同步指南已下载！你也可以在项目中查看 SHORTCUTS_GUIDE.md 文件。');
 }
 
-// ===================== INIT =====================
-DB.init();
-renderDashboard();
+// ===================== API 层 + 用户认证 =====================
+const API = (() => {
+  const BASE = window.location.origin;
+  let token = localStorage.getItem('glowfit_token') || '';
+  let currentUser = null;
+
+  function getHeaders() {
+    const h = { 'Content-Type': 'application/json' };
+    if (token) h['Authorization'] = 'Bearer ' + token;
+    return h;
+  }
+
+  async function request(method, path, body) {
+    try {
+      const opts = { method, headers: getHeaders() };
+      if (body) opts.body = JSON.stringify(body);
+      const res = await fetch(BASE + path, opts);
+      const data = await res.json();
+      if (!res.ok && data.error === '未登录' || data.error === '登录已过期') {
+        logout();
+        return { success: false, error: data.error };
+      }
+      return data;
+    } catch (e) {
+      console.warn('API error:', path, e.message);
+      return { success: false, error: e.message };
+    }
+  }
+
+  async function login(username, password) {
+    const data = await request('POST', '/api/login', { username, password });
+    if (data.success) { token = data.token; currentUser = data.user; localStorage.setItem('glowfit_token', token); localStorage.setItem('glowfit_user', JSON.stringify(data.user)); }
+    return data;
+  }
+  async function register(username, password) {
+    const data = await request('POST', '/api/register', { username, password });
+    if (data.success) { token = data.token; currentUser = data.user; localStorage.setItem('glowfit_token', token); localStorage.setItem('glowfit_user', JSON.stringify(data.user)); }
+    return data;
+  }
+  function logout() { token = ''; currentUser = null; localStorage.removeItem('glowfit_token'); localStorage.removeItem('glowfit_user'); document.getElementById('authOverlay').classList.remove('app-hidden'); document.getElementById('appContainer').classList.add('hidden'); }
+
+  async function checkAuth() {
+    const saved = localStorage.getItem('glowfit_user');
+    if (saved) currentUser = JSON.parse(saved);
+    if (!token) return false;
+    const data = await request('GET', '/api/profile');
+    if (data.success) { currentUser = data.user; localStorage.setItem('glowfit_user', JSON.stringify(data.user)); return true; }
+    return false;
+  }
+
+  function getUser() { return currentUser; }
+
+  // ---- 数据同步（写入 + 云端同步） ----
+  async function syncFoods(foods) { localStorage.setItem('glowfit_foods', JSON.stringify(foods)); const r = await request('GET', '/api/foods'); if (r.success) return r.data; return []; }
+  async function addFood(f) { const foods = getFoods(); foods.push(f); localStorage.setItem('glowfit_foods', JSON.stringify(foods)); await request('POST', '/api/foods', f); }
+  async function delFood(id) { const foods = getFoods().filter(x => x.id !== id); localStorage.setItem('glowfit_foods', JSON.stringify(foods)); await request('DELETE', '/api/foods/' + id); }
+  function getFoods() { try { return JSON.parse(localStorage.getItem('glowfit_foods') || '[]'); } catch(e) { return []; } }
+
+  async function syncWorkouts(ws) { localStorage.setItem('glowfit_workouts', JSON.stringify(ws)); const r = await request('GET', '/api/workouts'); if (r.success) return r.data; return []; }
+  async function addWorkout(w) { const ws = getWorkouts(); ws.push(w); localStorage.setItem('glowfit_workouts', JSON.stringify(ws)); await request('POST', '/api/workouts', w); }
+  async function delWorkout(id) { const ws = getWorkouts().filter(x => x.id !== id); localStorage.setItem('glowfit_workouts', JSON.stringify(ws)); await request('DELETE', '/api/workouts/' + id); }
+  function getWorkouts() { try { return JSON.parse(localStorage.getItem('glowfit_workouts') || '[]'); } catch(e) { return []; } }
+
+  async function syncWeights(ws) { localStorage.setItem('glowfit_weights', JSON.stringify(ws)); const r = await request('GET', '/api/weights'); if (r.success) return r.data; return []; }
+  async function addWeight(w) { const ws = getWeights(); const filtered = ws.filter(x => x.date !== w.date); filtered.push(w); localStorage.setItem('glowfit_weights', JSON.stringify(filtered)); await request('POST', '/api/weights', w); }
+  function getWeights() { try { return JSON.parse(localStorage.getItem('glowfit_weights') || '[]'); } catch(e) { return []; } }
+
+  async function syncWater(ws) { localStorage.setItem('glowfit_water', JSON.stringify(ws)); const r = await request('GET', '/api/water'); if (r.success) return r.data; return []; }
+  async function setWater(ds, amount) { const w = getWaterObj(); w[ds] = amount; localStorage.setItem('glowfit_water', JSON.stringify(w)); await request('POST', '/api/water', { amount, date: ds }); }
+  function getWaterObj() { try { return JSON.parse(localStorage.getItem('glowfit_water') || '{}'); } catch(e) { return {}; } }
+  function getWaterAmt(ds) { const w = getWaterObj(); return w[ds] || 0; }
+
+  async function syncMeasures(ms) { localStorage.setItem('glowfit_measures', JSON.stringify(ms)); const r = await request('GET', '/api/body-measures'); if (r.success) return r.data; return []; }
+  async function addMeasure(m) { const ms = getMeasures(); ms.push(m); localStorage.setItem('glowfit_measures', JSON.stringify(ms)); await request('POST', '/api/body-measures', m); }
+  function getMeasures() { try { return JSON.parse(localStorage.getItem('glowfit_measures') || '[]'); } catch(e) { return []; } }
+
+  async function loadAllData() {
+    if (!token) return;
+    const r1 = await request('GET', '/api/foods'); if (r1.success) localStorage.setItem('glowfit_foods', JSON.stringify(r1.data));
+    const r2 = await request('GET', '/api/workouts'); if (r2.success) localStorage.setItem('glowfit_workouts', JSON.stringify(r2.data));
+    const r3 = await request('GET', '/api/weights'); if (r3.success) localStorage.setItem('glowfit_weights', JSON.stringify(r3.data));
+    const r4 = await request('GET', '/api/water'); if (r4.success && Array.isArray(r4.data)) { const wo = {}; r4.data.forEach(x => { wo[x.date] = parseFloat(x.amount); }); localStorage.setItem('glowfit_water', JSON.stringify(wo)); }
+    const r5 = await request('GET', '/api/body-measures'); if (r5.success) localStorage.setItem('glowfit_measures', JSON.stringify(r5.data));
+    // 修正 DB 读取指向 API
+  }
+
+  return { login, register, logout, checkAuth, getUser, getFoods, syncFoods, addFood, delFood, getWorkouts, syncWorkouts, addWorkout, delWorkout, getWeights, syncWeights, addWeight, getWaterObj, getWaterAmt, setWater, getMeasures, syncMeasures, addMeasure, loadAllData, BASE };
+})();
+
+// ---- 重写 DB 层指向 API ----
+const _origDBInit = DB.init;
+DB.init = function() {
+  // 不再调用原来的 init，改为通过 API 加载
+};
+// 重写 DB.get/set 使其优先使用 API 数据
+DB.get = function(k) {
+  if (k === 'foods') return API.getFoods();
+  else if (k === 'workouts') return API.getWorkouts();
+  else if (k === 'weights') return API.getWeights();
+  else if (k === 'water') return API.getWaterObj();
+  else if (k === 'bodyMeasures') return API.getMeasures();
+  else if (k === 'commonFoods' || k === 'workoutTemplates' || k === 'goals') {
+    const key = 'glowfit_' + k;
+    try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch(e) { return null; }
+  }
+  else {
+    try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch(e) { return null; }
+  }
+};
+DB.set = function(k, v) {
+  if (k === 'foods') { localStorage.setItem('glowfit_foods', JSON.stringify(v)); }
+  else if (k === 'workouts') { localStorage.setItem('glowfit_workouts', JSON.stringify(v)); }
+  else if (k === 'weights') { localStorage.setItem('glowfit_weights', JSON.stringify(v)); }
+  else if (k === 'water') { localStorage.setItem('glowfit_water', JSON.stringify(v)); }
+  else if (k === 'bodyMeasures') { localStorage.setItem('glowfit_measures', JSON.stringify(v)); }
+  else if (k === 'commonFoods' || k === 'workoutTemplates' || k === 'goals') { localStorage.setItem('glowfit_' + k, JSON.stringify(v)); }
+  else { localStorage.setItem(k, JSON.stringify(v)); }
+};
+
+// ---- 重写 saveFood/saveWorkout 等以同步云端 ----
+const _origSaveFood = saveFood;
+saveFood = function() {
+  const name = document.getElementById('foodName').value.trim();
+  if (!name) { alert('请填写食物名称'); return; }
+  const f = {
+    id: Date.now() + '', name, meal: document.getElementById('foodMeal').value,
+    weight: parseFloat(document.getElementById('foodWeight').value) || 0,
+    cal: parseFloat(document.getElementById('foodCal').value) || 0,
+    protein: parseFloat(document.getElementById('foodProtein').value) || 0,
+    carb: parseFloat(document.getElementById('foodCarb').value) || 0,
+    fat: parseFloat(document.getElementById('foodFat').value) || 0,
+    note: document.getElementById('foodNote').value,
+    date: document.getElementById('foodDate').value || fmt(currentDate),
+    createdAt: new Date().toISOString()
+  };
+  const foods = DB.get('foods') || [];
+  foods.push(f);
+  DB.set('foods', foods);
+  API.addFood(f); // 同步云端
+  closeFoodModal();
+  refreshAll();
+};
+
+const _origSaveWorkout = saveWorkout;
+saveWorkout = function() {
+  const name = document.getElementById('woName').value.trim();
+  if (!name) { alert('请填写运动名称'); return; }
+  const w = {
+    id: Date.now() + '', name, type: document.getElementById('woType').value,
+    duration: parseFloat(document.getElementById('woDuration').value) || 0,
+    cal: parseFloat(document.getElementById('woCal').value) || 0,
+    sets: parseFloat(document.getElementById('woSets').value) || 0,
+    reps: parseFloat(document.getElementById('woReps').value) || 0,
+    weightKg: parseFloat(document.getElementById('woWeight').value) || 0,
+    note: document.getElementById('woNote').value,
+    date: document.getElementById('woDate').value || fmt(currentDate),
+    fromWatch: false, createdAt: new Date().toISOString()
+  };
+  const ws = DB.get('workouts') || [];
+  ws.push(w);
+  DB.set('workouts', ws);
+  API.addWorkout(w);
+  closeWorkoutModal();
+  refreshAll();
+};
+
+const _origDeleteRecord = deleteRecord;
+deleteRecord = function(type, id) {
+  let arr = DB.get(type) || [];
+  arr = arr.filter(r => r.id !== id);
+  DB.set(type, arr);
+  if (type === 'foods') API.delFood(id);
+  else if (type === 'workouts') API.delWorkout(id);
+  refreshAll();
+};
+
+const _origSaveWeightDash = saveWeightDash;
+saveWeightDash = function() {
+  const v = parseFloat(document.getElementById('dashWeight').value);
+  if (!v || v < 20 || v > 500) { alert('请输入有效体重'); return; }
+  const ds = fmt(currentDate);
+  const w = { date: ds, value: v, id: Date.now() + '' };
+  API.addWeight(w);
+  renderDashboard();
+};
+
+// ---- 用户认证函数 ----
+function switchAuthTab(tab) {
+  document.getElementById('authTabLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('authTabRegister').classList.toggle('active', tab === 'register');
+  document.getElementById('authFormLogin').classList.toggle('hidden', tab !== 'login');
+  document.getElementById('authFormRegister').classList.toggle('hidden', tab !== 'register');
+  document.getElementById('loginError').classList.add('hidden');
+  document.getElementById('regError').classList.add('hidden');
+}
+
+async function doLogin() {
+  const u = document.getElementById('loginUsername').value.trim();
+  const p = document.getElementById('loginPassword').value;
+  if (!u || !p) { showErr('loginError', '请输入用户名和密码'); return; }
+  const res = await API.login(u, p);
+  if (res.success) {
+    await API.loadAllData();
+    onAuthSuccess();
+  } else {
+    showErr('loginError', res.error || '登录失败');
+  }
+}
+
+async function doRegister() {
+  const u = document.getElementById('regUsername').value.trim();
+  const p = document.getElementById('regPassword').value;
+  const p2 = document.getElementById('regPassword2').value;
+  if (!u || u.length < 2) { showErr('regError', '用户名至少2个字符'); return; }
+  if (!p || p.length < 4) { showErr('regError', '密码至少4个字符'); return; }
+  if (p !== p2) { showErr('regError', '两次密码不一致'); return; }
+  const res = await API.register(u, p);
+  if (res.success) {
+    await API.loadAllData();
+    onAuthSuccess();
+  } else {
+    showErr('regError', res.error || '注册失败');
+  }
+}
+
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+
+function onAuthSuccess() {
+  document.getElementById('authOverlay').classList.add('app-hidden');
+  document.getElementById('appContainer').classList.remove('hidden');
+  document.getElementById('userBtnName').textContent = API.getUser()?.username || '用户';
+  refreshAll();
+}
+
+function showUserMenu() {
+  if (confirm('当前用户：' + (API.getUser()?.username || '未登录') + '\n\n点击确定退出登录')) {
+    API.logout();
+    location.reload();
+  }
+}
+
+// ===================== 修改 setWater 同步云端 =====================
+const _origSetWater = setWater;
+setWater = function(ds, a) {
+  const w = API.getWaterObj();
+  w[ds] = Math.max(0, a);
+  DB.set('water', w);
+  API.setWater(ds, Math.max(0, a));
+};
+
+const _origSaveBodyWeight = saveBodyWeight;
+saveBodyWeight = function() {
+  const v = parseFloat(document.getElementById('bodyWeight').value);
+  if (!v || v < 20 || v > 500) { alert('请输入有效体重'); return; }
+  API.addWeight({ date: todayStr(), value: v, id: Date.now() + '' });
+  renderBody();
+};
+
+const _origSaveBodyMeasure = saveBodyMeasure;
+saveBodyMeasure = function() {
+  const waist = parseFloat(document.getElementById('bodyWaist').value);
+  const hip = parseFloat(document.getElementById('bodyHip').value);
+  const arm = parseFloat(document.getElementById('bodyArm').value);
+  const thigh = parseFloat(document.getElementById('bodyThigh').value);
+  if (!waist && !hip && !arm && !thigh) { alert('请至少填写一项'); return; }
+  const m = { date: todayStr(), id: Date.now() + '', waist: waist || 0, hip: hip || 0, arm: arm || 0, thigh: thigh || 0 };
+  API.addMeasure(m);
+  renderBody();
+};
+
+// ===================== 改 INIT =====================
+function initApp() {
+  // 初始化默认数据
+  if (!localStorage.getItem('glowfit_commonFoods')) localStorage.setItem('glowfit_commonFoods', JSON.stringify(defaultCommonFoods));
+  if (!localStorage.getItem('glowfit_templates')) localStorage.setItem('glowfit_templates', JSON.stringify(defaultTemplates));
+  if (!localStorage.getItem('glowfit_goals')) localStorage.setItem('glowfit_goals', JSON.stringify({ cal: 2000, protein: 150, carb: 250, fat: 65, water: 2000, weight: 65 }));
+  API.checkAuth().then(authed => {
+    if (authed) {
+      document.getElementById('authOverlay').classList.add('app-hidden');
+      document.getElementById('appContainer').classList.remove('hidden');
+      document.getElementById('userBtnName').textContent = API.getUser()?.username || '用户';
+      API.loadAllData().then(() => { refreshAll(); });
+    } else {
+      localStorage.removeItem('glowfit_token');
+      localStorage.removeItem('glowfit_user');
+    }
+  });
+}
+
+// 启动
+initApp();
 </script>
 </body>
 </html>

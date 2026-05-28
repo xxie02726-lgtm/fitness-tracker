@@ -1,14 +1,18 @@
 {
   "name": "glowfit-server",
-  "version": "1.0.0",
-  "description": "GlowFit 健身饮食记录后端服务（DeepSeek AI + Apple Watch 同步）",
+  "version": "2.0.0",
+  "description": "GlowFit 健身饮食记录后端服务（多用户 + PostgreSQL + DeepSeek AI + Apple Watch）",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "init-db": "psql $DATABASE_URL -f database/init.sql"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.0"
   }
 }
