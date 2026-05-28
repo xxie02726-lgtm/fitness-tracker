@@ -479,7 +479,7 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: #34d399
     <div class="rounded-2xl bg-white/5 p-4 mb-5">
       <p class="text-[11px] opacity-60 mb-1.5">服务器地址</p>
       <div class="flex gap-2">
-        <input type="text" id="watchServerUrl" class="flex-1 px-3 py-2 rounded-xl bg-white/10 border border-white/10 text-white text-xs" placeholder="http://你的服务器地址:3000" value="http://localhost:3000">
+        <input type="text" id="watchServerUrl" class="flex-1 px-3 py-2 rounded-xl bg-white/10 border border-white/10 text-white text-xs" placeholder="http://你的服务器地址:3000" value="http://localhost:3001">
         <button onclick="testWatchConnection()" class="px-3 py-2 rounded-xl bg-white/10 text-white text-xs font-semibold hover:bg-white/20">测试</button>
       </div>
       <p class="text-[10px] opacity-40 mt-1" id="watchConnStatus"></p>
@@ -1083,7 +1083,7 @@ function sendAI() {
   };
 
   // 调用后端 API
-  const serverUrl = document.getElementById('watchServerUrl')?.value || 'http://localhost:3000';
+  const serverUrl = document.getElementById('watchServerUrl')?.value || 'http://localhost:3001';
   fetch(serverUrl + '/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -1209,7 +1209,7 @@ function closeWatchBind() {
   document.getElementById('watchBindModal').classList.add('hidden');
 }
 function testWatchConnection() {
-  const url = document.getElementById('watchServerUrl')?.value || 'http://localhost:3000';
+  const url = document.getElementById('watchServerUrl')?.value || 'http://localhost:3001';
   const statusEl = document.getElementById('watchConnStatus');
   statusEl.textContent = '⏳ 测试连接中...';
   statusEl.style.color = 'rgba(255,255,255,0.6)';
@@ -1238,7 +1238,7 @@ function downloadGuide() {
   const guide = `# GlowFit Apple Watch 数据同步配置指南
 
 ## 服务器地址
-${document.getElementById('watchServerUrl')?.value || 'http://localhost:3000'}
+${document.getElementById('watchServerUrl')?.value || 'http://localhost:3001'}
 
 ## API 端点
 POST /api/sync-watch-data
