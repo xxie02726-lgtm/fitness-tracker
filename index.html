@@ -43,6 +43,71 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: #34d399
 .dark .water-glass { border-color:#60a5fa; }
 .dark .water-glass.filled { background:#3b82f6; border-color:#2563eb; }
 @media (max-width:768px) { .glass-card { border-radius: 18px; } }
+
+/* === AI Chat Widget === */
+.ai-fab { position:fixed; bottom:24px; right:24px; z-index:999; width:56px; height:56px; border-radius:50%;
+  background:linear-gradient(135deg,#10b981,#059669); color:white; border:none; cursor:pointer;
+  box-shadow:0 4px 20px rgba(16,185,129,0.4); display:flex; align-items:center; justify-content:center;
+  font-size:22px; transition:all 0.25s ease; }
+.ai-fab:hover { transform:scale(1.1) translateY(-2px); box-shadow:0 8px 30px rgba(16,185,129,0.5); }
+.ai-fab .badge-dot { position:absolute; top:-2px; right:-2px; width:14px; height:14px; border-radius:50%;
+  background:#ef4444; border:2px solid white; animation:pulse-dot 2s infinite; }
+@keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+.ai-panel { position:fixed; bottom:90px; right:24px; width:380px; max-width:calc(100vw - 32px); height:520px;
+  max-height:calc(100vh - 120px); z-index:999; display:none; flex-direction:column; overflow:hidden; }
+.ai-panel.open { display:flex; animation:slideUp 0.3s ease; }
+@keyframes slideUp { from{opacity:0;transform:translateY(20px) scale(0.96)} to{opacity:1;transform:translateY(0) scale(1)} }
+.ai-header { padding:14px 18px; border-bottom:1px solid rgba(255,255,255,0.3); display:flex; align-items:center; gap:10px; }
+.ai-header .ai-avatar { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,#10b981,#059669);
+  display:flex; align-items:center; justify-content:center; color:white; font-size:14px; }
+.ai-close { margin-left:auto; width:28px; height:28px; border-radius:50%; background:rgba(255,255,255,0.3);
+  border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.7);
+  font-size:12px; transition:all 0.15s; }
+.ai-close:hover { background:rgba(255,255,255,0.5); color:white; }
+.ai-messages { flex:1; overflow-y:auto; padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
+.ai-msg { max-width:85%; padding:10px 14px; border-radius:16px; font-size:12.5px; line-height:1.5;
+  word-wrap:break-word; animation:fadeIn 0.25s ease; }
+.ai-msg.ai { align-self:flex-start; background:rgba(255,255,255,0.9); color:#1e293b; border-bottom-left-radius:4px; }
+.dark .ai-msg.ai { background:rgba(30,41,59,0.9); color:#e2e8f0; }
+.ai-msg.user { align-self:flex-end; background:linear-gradient(135deg,#10b981,#059669); color:white;
+  border-bottom-right-radius:4px; }
+.ai-msg .msg-action-btn { display:inline-flex; align-items:center; gap:4px; margin-top:6px; padding:4px 10px;
+  border-radius:8px; border:none; font-size:11px; font-weight:600; cursor:pointer; transition:all 0.15s;
+  background:rgba(16,185,129,0.15); color:#059669; }
+.ai-msg .msg-action-btn:hover { background:rgba(16,185,129,0.25); }
+.ai-msg .msg-actions { display:flex; flex-wrap:wrap; gap:4px; margin-top:6px; }
+.ai-input-wrap { padding:10px 14px 14px; border-top:1px solid rgba(0,0,0,0.06); display:flex; gap:8px; align-items:flex-end; }
+.dark .ai-input-wrap { border-color:rgba(255,255,255,0.06); }
+.ai-input { flex:1; border:none; background:rgba(255,255,255,0.6); border-radius:16px; padding:10px 14px;
+  font-size:12.5px; font-family:inherit; resize:none; max-height:80px; outline:none; line-height:1.4; }
+.dark .ai-input { background:rgba(255,255,255,0.06); color:#e2e8f0; }
+.ai-input:focus { box-shadow:0 0 0 2px rgba(16,185,129,0.2); }
+.ai-send { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#10b981,#059669);
+  border:none; color:white; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  font-size:14px; transition:all 0.15s; flex-shrink:0; }
+.ai-send:hover { transform:scale(1.08); }
+.ai-send:disabled { opacity:0.5; cursor:not-allowed; }
+.ai-typing { display:flex; gap:4px; padding:4px 0; align-items:center; }
+.ai-typing-dot { width:6px; height:6px; border-radius:50%; background:#94a3b8; animation:typingBounce 1.2s infinite; }
+.ai-typing-dot:nth-child(2) { animation-delay:0.2s; }
+.ai-typing-dot:nth-child(3) { animation-delay:0.4s; }
+@keyframes typingBounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+/* === Apple Watch Binding Modal === */
+.watch-bind-card { background:linear-gradient(135deg,#1e293b,#334155); color:white; border:none; }
+.watch-step { display:flex; gap:12px; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.08); }
+.watch-step:last-child { border-bottom:none; }
+.watch-step-num { width:26px; height:26px; border-radius:50%; background:rgba(16,185,129,0.2); color:#34d399;
+  display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; margin-top:2px; }
+.watch-step-content { flex:1; }
+.watch-step-content h4 { font-size:13px; font-weight:600; margin-bottom:2px; }
+.watch-step-content p { font-size:11px; opacity:0.7; line-height:1.5; }
+
+@media (max-width:640px) {
+  .ai-panel { right:8px; left:8px; width:auto; bottom:80px; height:460px; }
+  .ai-fab { bottom:16px; right:16px; width:50px; height:50px; font-size:20px; }
+}
 </style>
 </head>
 <body class="p-3 md:p-6 text-slate-800 font-sans min-h-screen" id="appBody">
@@ -60,6 +125,7 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: #34d399
   </div>
   <div class="flex items-center gap-2">
     <button onclick="toggleDark()" class="glass-btn w-8 h-8 rounded-full flex items-center justify-center text-slate-500 hover:text-slate-700 text-sm" id="darkToggle"><i class="fa-solid fa-moon"></i></button>
+    <button onclick="openWatchBind()" class="glass-btn w-8 h-8 rounded-full flex items-center justify-center text-slate-500 hover:text-blue-600 text-sm" title="绑定 Apple Watch"><i class="fa-brands fa-apple"></i></button>
     <button onclick="openFoodModal()" class="glass-btn px-3 py-1.5 rounded-full text-xs font-semibold text-emerald-600 hover:text-emerald-700 flex items-center gap-1.5"><i class="fa-solid fa-plus"></i> 记一餐</button>
     <button id="watchSyncBtn" onclick="toggleWatchSync()" class="hidden md:flex items-center gap-2 bg-gradient-to-r from-slate-800 to-slate-900 text-white px-4 py-2 rounded-full text-xs font-semibold shadow-lg hover:scale-105 transition-all">
       <i class="fa-brands fa-apple text-sm"></i>
@@ -352,6 +418,102 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: #34d399
 </div>
 
 </div><!-- /max-w-5xl -->
+
+<!-- ==================== AI 智能教练 ==================== -->
+<!-- 浮动按钮 -->
+<button class="ai-fab" id="aiFab" onclick="toggleAI()" title="GlowFit AI 教练">
+  <i class="fa-solid fa-robot"></i>
+  <span class="badge-dot" id="aiBadge"></span>
+</button>
+
+<!-- AI 聊天面板 -->
+<div class="ai-panel glass-card shadow-2xl" id="aiPanel">
+  <div class="ai-header" style="background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:24px 24px 0 0">
+    <div class="ai-avatar"><i class="fa-solid fa-robot"></i></div>
+    <div>
+      <div class="text-sm font-semibold text-white">GlowFit AI 教练</div>
+      <div class="text-[10px] opacity-60" id="aiStatus">在线 · 随时为你服务</div>
+    </div>
+    <button class="ai-close" onclick="toggleAI()"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="ai-messages" id="aiMessages">
+    <div class="ai-msg ai">
+      嗨！我是你的 <b>GlowFit AI 教练</b> 🤖💚<br><br>
+      你可以直接跟我说：<br><br>
+      🥗 <b>「中午吃了半碗米饭和番茄炒蛋」</b><br>
+      🏃 <b>「下午跑了 3 公里」</b><br>
+      💬 <b>「我今天还剩多少热量？」</b><br><br>
+      我来帮你自动记录和分析，开始吧！
+    </div>
+  </div>
+  <div class="ai-input-wrap">
+    <textarea class="ai-input" id="aiInput" rows="1" placeholder="告诉 AI 你今天吃了什么、做了什么运动..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAI()}"></textarea>
+    <button class="ai-send" id="aiSendBtn" onclick="sendAI()"><i class="fa-solid fa-paper-plane"></i></button>
+  </div>
+</div>
+
+<!-- ==================== Apple Watch 绑定弹窗 ==================== -->
+<div id="watchBindModal" class="fixed inset-0 modal-bg z-50 flex items-center justify-center hidden p-4" onclick="if(event.target===this)closeWatchBind()">
+  <div class="watch-bind-card rounded-3xl p-6 shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+    <div class="flex justify-between items-center mb-5">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-2xl"><i class="fa-brands fa-apple"></i></div>
+        <div>
+          <h3 class="text-base font-bold">绑定 Apple Watch</h3>
+          <p class="text-[11px] opacity-60">自动同步健康数据</p>
+        </div>
+      </div>
+      <button onclick="closeWatchBind()" class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-white/60 text-xs hover:bg-white/20"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <!-- 绑定状态 -->
+    <div class="rounded-2xl bg-white/10 p-4 mb-5 flex items-center gap-3" id="watchBindStatus">
+      <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg" id="watchStatusIcon"><i class="fa-solid fa-link-slash text-slate-400"></i></div>
+      <div>
+        <p class="text-sm font-semibold" id="watchStatusTitle">未绑定</p>
+        <p class="text-[11px] opacity-60" id="watchStatusDesc">通过 iPhone 快捷指令同步数据</p>
+      </div>
+    </div>
+
+    <!-- 服务器地址 -->
+    <div class="rounded-2xl bg-white/5 p-4 mb-5">
+      <p class="text-[11px] opacity-60 mb-1.5">服务器地址</p>
+      <div class="flex gap-2">
+        <input type="text" id="watchServerUrl" class="flex-1 px-3 py-2 rounded-xl bg-white/10 border border-white/10 text-white text-xs" placeholder="http://你的服务器地址:3000" value="http://localhost:3000">
+        <button onclick="testWatchConnection()" class="px-3 py-2 rounded-xl bg-white/10 text-white text-xs font-semibold hover:bg-white/20">测试</button>
+      </div>
+      <p class="text-[10px] opacity-40 mt-1" id="watchConnStatus"></p>
+    </div>
+
+    <!-- 配置步骤 -->
+    <p class="text-xs font-semibold mb-3">📱 iPhone 快捷指令配置步骤</p>
+    <div class="watch-step">
+      <div class="watch-step-num">1</div>
+      <div class="watch-step-content"><h4>打开快捷指令 App</h4><p>在 iPhone 上找到并打开「快捷指令」</p></div>
+    </div>
+    <div class="watch-step">
+      <div class="watch-step-num">2</div>
+      <div class="watch-step-content"><h4>创建新自动化</h4><p>选择「特定时间」设为每晚 21:00，或选择「体能训练→停止时」</p></div>
+    </div>
+    <div class="watch-step">
+      <div class="watch-step-num">3</div>
+      <div class="watch-step-content"><h4>获取健康样本</h4><p>添加「活动能量」「步数」「步行+跑步距离」，时间范围设为「今天」</p></div>
+    </div>
+    <div class="watch-step">
+      <div class="watch-step-num">4</div>
+      <div class="watch-step-content"><h4>发送 HTTP 请求</h4><p>方法 POST，URL 填入上方服务器地址 + <code class="bg-white/10 px-1 rounded text-[10px]">/api/sync-watch-data</code></p></div>
+    </div>
+    <div class="watch-step">
+      <div class="watch-step-num">5</div>
+      <div class="watch-step-content"><h4>完成！</h4><p>数据将自动同步到 GlowFit，在运动页面可查看</p></div>
+    </div>
+
+    <div class="flex gap-2 mt-5">
+      <button onclick="downloadGuide()" class="flex-1 py-2.5 rounded-xl bg-white/10 text-white text-xs font-semibold hover:bg-white/20"><i class="fa-solid fa-download mr-1"></i>下载指南</button>
+      <button onclick="closeWatchBind()" class="flex-1 py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-500">我知道了</button>
+    </div>
+  </div>
+</div>
 
 <!-- ==================== MODALS ==================== -->
 <!-- Food Modal -->
@@ -864,6 +1026,243 @@ function renderDashboard(){
   document.getElementById('dashWeightRecent').textContent=recent.length?'近期：'+recent.map(w=>`${w.date.slice(5)} ${w.value}kg`).join(' · '):'';
   // Watch
   updateWatchUI();if(watchConnected)simulateWatchData();
+}
+
+// ===================== AI 智能教练 =====================
+let aiOpen = false;
+let aiAwaitingResponse = false;
+
+function toggleAI() {
+  aiOpen = !aiOpen;
+  document.getElementById('aiPanel').classList.toggle('open', aiOpen);
+  document.getElementById('aiBadge').style.display = aiOpen ? 'none' : 'block';
+  if (aiOpen) {
+    document.getElementById('aiInput').focus();
+    // 清除未读提示
+  }
+}
+
+function sendAI() {
+  const input = document.getElementById('aiInput');
+  const text = input.value.trim();
+  if (!text || aiAwaitingResponse) return;
+
+  // 显示用户消息
+  addAIMessage('user', text);
+  input.value = '';
+  input.style.height = 'auto';
+  aiAwaitingResponse = true;
+  document.getElementById('aiSendBtn').disabled = true;
+
+  // 显示打字指示器
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'ai-msg ai';
+  typingDiv.id = 'aiTyping';
+  typingDiv.innerHTML = '<div class="ai-typing"><div class="ai-typing-dot"></div><div class="ai-typing-dot"></div><div class="ai-typing-dot"></div></div>';
+  document.getElementById('aiMessages').appendChild(typingDiv);
+  scrollAIChat();
+
+  // 构建上下文
+  const ds = fmt(currentDate);
+  const foods = (DB.get('foods') || []).filter(f => f.date === ds);
+  const workouts = (DB.get('workouts') || []).filter(w => w.date === ds);
+  const goals = DB.get('goals') || { cal: 2000, protein: 150, carb: 250, fat: 65, water: 2000 };
+  const context = {
+    calIn: Math.round(foods.reduce((s, f) => s + f.cal, 0)),
+    calOut: Math.round(workouts.reduce((s, w) => s + w.cal, 0)),
+    proteinIn: Math.round(foods.reduce((s, f) => s + f.protein, 0)),
+    carbIn: Math.round(foods.reduce((s, f) => s + f.carb, 0)),
+    fatIn: Math.round(foods.reduce((s, f) => s + f.fat, 0)),
+    water: getWater(ds),
+    streak: calcStreak(),
+    goalCal: goals.cal,
+    goalProtein: goals.protein,
+    goalCarb: goals.carb,
+    goalFat: goals.fat,
+    goalWater: goals.water
+  };
+
+  // 调用后端 API
+  const serverUrl = document.getElementById('watchServerUrl')?.value || 'http://localhost:3000';
+  fetch(serverUrl + '/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      messages: [{ role: 'user', content: text }],
+      context: context
+    })
+  })
+  .then(r => r.json())
+  .then(result => {
+    // 移除打字指示器
+    const typing = document.getElementById('aiTyping');
+    if (typing) typing.remove();
+
+    if (result.success && result.data) {
+      const data = result.data;
+      let replyHtml = data.message.replace(/\n/g, '<br>');
+
+      // 如果有食物数据，显示一键记录按钮
+      if (data.foods && data.foods.length > 0) {
+        replyHtml += '<div class="msg-actions">';
+        data.foods.forEach((f, i) => {
+          replyHtml += `<button class="msg-action-btn" onclick="autoAddFood(${i})">🥗 记录「${f.name}」</button>`;
+        });
+        replyHtml += '</div>';
+        // 保存 AI 返回的数据以便一键添加
+        window._aiFoods = data.foods;
+      }
+
+      // 如果有运动数据，显示一键记录按钮
+      if (data.workouts && data.workouts.length > 0) {
+        replyHtml += '<div class="msg-actions">';
+        data.workouts.forEach((w, i) => {
+          replyHtml += `<button class="msg-action-btn" onclick="autoAddWorkout(${i})">💪 记录「${w.name}」</button>`;
+        });
+        replyHtml += '</div>';
+        window._aiWorkouts = data.workouts;
+      }
+
+      addAIMessage('ai', replyHtml);
+    } else {
+      addAIMessage('ai', '抱歉，我暂时无法处理这个请求。请确保后端服务已启动。😅');
+    }
+  })
+  .catch(err => {
+    const typing = document.getElementById('aiTyping');
+    if (typing) typing.remove();
+    addAIMessage('ai', '⚠️ 连接后端失败，请确保服务器已启动。<br><br>💡 运行 <code style="background:rgba(0,0,0,0.06);padding:1px 4px;border-radius:4px">node server.js</code> 启动服务，或配置正确的服务器地址。');
+  })
+  .finally(() => {
+    aiAwaitingResponse = false;
+    document.getElementById('aiSendBtn').disabled = false;
+  });
+}
+
+function addAIMessage(role, html) {
+  const div = document.createElement('div');
+  div.className = `ai-msg ${role}`;
+  div.innerHTML = html;
+  document.getElementById('aiMessages').appendChild(div);
+  scrollAIChat();
+}
+
+function scrollAIChat() {
+  const el = document.getElementById('aiMessages');
+  setTimeout(() => { el.scrollTop = el.scrollHeight; }, 50);
+}
+
+function autoAddFood(idx) {
+  const foods = window._aiFoods || [];
+  if (!foods[idx]) return;
+  const f = foods[idx];
+  const record = {
+    id: Date.now() + '_' + idx,
+    name: f.name,
+    meal: f.meal || '午餐',
+    weight: f.weight || 100,
+    cal: f.cal || 0,
+    protein: f.protein || 0,
+    carb: f.carb || 0,
+    fat: f.fat || 0,
+    note: '来自 AI 自动记录 🤖',
+    date: fmt(currentDate),
+    createdAt: new Date().toISOString()
+  };
+  const allFoods = DB.get('foods') || [];
+  allFoods.push(record);
+  DB.set('foods', allFoods);
+  refreshAll();
+  addAIMessage('ai', `✅ 已自动记录「${f.name}」（${Math.round(f.cal)} kcal）到 ${record.meal}！`);
+}
+
+function autoAddWorkout(idx) {
+  const workouts = window._aiWorkouts || [];
+  if (!workouts[idx]) return;
+  const w = workouts[idx];
+  const record = {
+    id: Date.now() + '_' + idx,
+    name: w.name,
+    type: w.type || '有氧',
+    duration: w.duration || 30,
+    cal: w.cal || 0,
+    sets: w.sets || 0,
+    reps: w.reps || 0,
+    weightKg: 0,
+    note: '来自 AI 自动记录 🤖',
+    date: fmt(currentDate),
+    fromWatch: false,
+    createdAt: new Date().toISOString()
+  };
+  const allWo = DB.get('workouts') || [];
+  allWo.push(record);
+  DB.set('workouts', allWo);
+  refreshAll();
+  addAIMessage('ai', `✅ 已自动记录运动「${w.name}」（消耗 ${Math.round(w.cal)} kcal）！`);
+}
+
+// ===================== Apple Watch 绑定 =====================
+function openWatchBind() {
+  document.getElementById('watchBindModal').classList.remove('hidden');
+}
+function closeWatchBind() {
+  document.getElementById('watchBindModal').classList.add('hidden');
+}
+function testWatchConnection() {
+  const url = document.getElementById('watchServerUrl')?.value || 'http://localhost:3000';
+  const statusEl = document.getElementById('watchConnStatus');
+  statusEl.textContent = '⏳ 测试连接中...';
+  statusEl.style.color = 'rgba(255,255,255,0.6)';
+
+  fetch(url + '/api/health')
+    .then(r => r.json())
+    .then(data => {
+      if (data.status === 'ok') {
+        statusEl.innerHTML = `✅ 连接成功 · DeepSeek: ${data.deepseek === 'connected' ? '已连接' : '演示模式'} · 已同步 ${data.watchRecords} 条`;
+        statusEl.style.color = '#34d399';
+        document.getElementById('watchStatusIcon').innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400"></i>';
+        document.getElementById('watchStatusTitle').textContent = '已连接';
+        document.getElementById('watchStatusDesc').textContent = '服务器运行正常，可以接收数据';
+      } else {
+        statusEl.textContent = '❌ 服务器返回异常';
+        statusEl.style.color = '#f87171';
+      }
+    })
+    .catch(err => {
+      statusEl.textContent = '❌ 连接失败：' + err.message;
+      statusEl.style.color = '#f87171';
+    });
+}
+function downloadGuide() {
+  // 创建一个 Blob 并下载
+  const guide = `# GlowFit Apple Watch 数据同步配置指南
+
+## 服务器地址
+${document.getElementById('watchServerUrl')?.value || 'http://localhost:3000'}
+
+## API 端点
+POST /api/sync-watch-data
+
+## 请求体 JSON 格式
+{
+  "activeCalories": 350,
+  "steps": 8500,
+  "distance": 6.2,
+  "date": "2026-05-28",
+  "exerciseMinutes": 35,
+  "standHours": 10
+}
+
+## iPhone 快捷指令配置步骤
+详见项目中的 SHORTCUTS_GUIDE.md
+`;
+  const blob = new Blob([guide], { type: 'text/markdown' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'glowfit-watch-sync-guide.md';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  addAIMessage('ai', '📥 同步指南已下载！你也可以在项目中查看 SHORTCUTS_GUIDE.md 文件。');
 }
 
 // ===================== INIT =====================
